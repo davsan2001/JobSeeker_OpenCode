@@ -291,14 +291,59 @@ export default function SettingsPage() {
         </div>
         
         <p className="text-sm text-zinc-400">
-          Paste your CV text below. We'll summarize it once and reuse that summary for every application.
+          Upload your CV (PDF or text file). We'll extract the text, summarize it once, and reuse that summary for every application.
         </p>
         
+        <div className="flex flex-wrap gap-3 items-center">
+          <label className="btn btn-ghost cursor-pointer">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            Upload PDF
+            <input
+              type="file"
+              accept=".pdf,.docx,.doc,.txt"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+                
+                setUploadingCv(true)
+                setError(null)
+                
+                const formData = new FormData()
+                formData.append('file', file)
+                
+                try {
+                  const res = await fetch('/api/cv', {
+                    method: 'POST',
+                    body: formData
+                  })
+                  
+                  if (!res.ok) {
+                    const data = await res.json()
+                    throw new Error(data.error || 'Failed to upload')
+                  }
+                  
+                  setCvStatus('uploaded')
+                  setSuccess('CV uploaded! Click "Summarize" to process it.')
+                  setTimeout(() => setSuccess(null), 3000)
+                } catch (err) {
+                  setError((err as Error).message)
+                } finally {
+                  setUploadingCv(false)
+                }
+              }}
+            />
+          </label>
+          <span className="text-xs text-zinc-500">or paste text below</span>
+        </div>
+        
         <textarea
-          className="textarea min-h-[200px]"
+          className="textarea min-h-[150px]"
           value={cvText}
           onChange={e => setCvText(e.target.value)}
-          placeholder="Paste your CV here (at least 100 characters)..."
+          placeholder="Or paste your CV text here (at least 100 characters)..."
         />
         
         <div className="flex gap-3">
@@ -307,7 +352,7 @@ export default function SettingsPage() {
             disabled={uploadingCv || !cvText.trim()}
             className="btn btn-ghost"
           >
-            {uploadingCv ? 'Uploading...' : 'Save CV Text'}
+            {uploadingCv ? 'Processing...' : 'Save Text'}
           </button>
           
           {cvStatus === 'uploaded' && (
@@ -329,7 +374,7 @@ export default function SettingsPage() {
               disabled={uploadingCv}
               className="btn btn-primary"
             >
-              Summarize CV
+              {uploadingCv ? 'Summarizing...' : 'Summarize CV'}
             </button>
           )}
         </div>
