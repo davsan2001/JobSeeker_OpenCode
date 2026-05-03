@@ -1,26 +1,67 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Help } from '@/components/Help'
 import type { UserConfig } from '@/lib/types'
 import type { ProviderId } from '@/lib/llm/types'
 
-interface ProviderInfo {
-  id: ProviderId
-  displayName: string
-  requiresApiKey: boolean
-  defaultModels: { id: string; label: string }[]
+const PROVIDER_MODELS: Record<ProviderId, { id: string; label: string }[]> = {
+  anthropic: [
+    { id: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
+    { id: 'claude-haiku-3-5-20250620', label: 'Claude Haiku 3.5' },
+    { id: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet' },
+    { id: 'claude-3-opus-20240229', label: 'Claude 3 Opus' }
+  ],
+  google: [
+    { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (recommended)' },
+    { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+    { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash' },
+    { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
+    { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' }
+  ],
+  openai: [
+    { id: 'gpt-4o', label: 'GPT-4o' },
+    { id: 'gpt-4o-mini', label: 'GPT-4o Mini (cheap)' },
+    { id: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
+    { id: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' }
+  ],
+  groq: [
+    { id: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B (recommended)' },
+    { id: 'llama-3.1-70b-versatile', label: 'Llama 3.1 70B' },
+    { id: 'mixtral-8x7b-32768', label: 'Mixtral 8x7B' },
+    { id: 'gemma2-9b-it', label: 'Gemma 2 9B' }
+  ],
+  ollama: [
+    { id: 'llama3.3', label: 'Llama 3.3' },
+    { id: 'llama3.1', label: 'Llama 3.1' },
+    { id: 'qwen2.5', label: 'Qwen 2.5' },
+    { id: 'mistral', label: 'Mistral' }
+  ],
+  'claude-code': [
+    { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5' },
+    { id: 'claude-sonnet-4-5-20251001', label: 'Claude Sonnet 4.5' }
+  ]
+}
+
+const PROVIDER_LABELS: Record<ProviderId, string> = {
+  anthropic: 'Anthropic (Claude)',
+  google: 'Google Gemini',
+  openai: 'OpenAI GPT',
+  groq: 'Groq (free tier)',
+  ollama: 'Ollama (local)',
+  'claude-code': 'Claude Code'
 }
 
 export default function SettingsPage() {
   const [cfg, setCfg] = useState<UserConfig | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
-  const [selectedProvider, setSelectedProvider] = useState<ProviderId>('anthropic')
+  const [selectedProvider, setSelectedProvider] = useState<ProviderId>('google')
   const [apiKey, setApiKey] = useState('')
   const [model, setModel] = useState('')
+  const [mode, setMode] = useState<'fast' | 'full'>('fast')
 
   useEffect(() => {
     fetch('/api/config')
@@ -34,24 +75,32 @@ export default function SettingsPage() {
             setModel(provider.model || '')
           }
         }
+        setMode(data.mode || 'fast')
       })
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
 
+  useEffect(() => {
+    const models = PROVIDER_MODELS[selectedProvider]
+    if (models && models.length > 0 && !model) {
+      setModel(models[0].id)
+    }
+  }, [selectedProvider])
+
   async function saveProvider() {
     setSaving(true)
-    setMessage(null)
+    setError(null)
+    setSuccess(false)
     try {
-      const body: Record<string, unknown> = {
-        provider: { id: selectedProvider },
-        mode: cfg?.mode || 'fast'
-      }
-      if (apiKey) {
-        (body.provider as Record<string, unknown>).apiKey = apiKey
-      }
-      if (model) {
-        (body.provider as Record<string, unknown>).model = model
+      const body = {
+        activeProvider: selectedProvider,
+        provider: { 
+          id: selectedProvider,
+          apiKey: apiKey || undefined,
+          model: model
+        },
+        mode
       }
 
       const res = await fetch('/api/config', {
@@ -59,11 +108,18 @@ export default function SettingsPage() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body)
       })
-      if (!res.ok) throw new Error('Failed to save')
-      setMessage('Settings saved!')
+      
+      const data = await res.json()
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to save')
+      }
+      
+      setSuccess(true)
       setApiKey('')
+      setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      setMessage((err as Error).message)
+      setError((err as Error).message)
     } finally {
       setSaving(false)
     }
@@ -86,7 +142,7 @@ export default function SettingsPage() {
         <h2 className="font-semibold text-lg">AI Provider</h2>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {(['anthropic', 'google', 'openai', 'groq', 'ollama'] as ProviderId[]).map(pid => (
+          {(Object.keys(PROVIDER_LABELS) as ProviderId[]).map(pid => (
             <button
               key={pid}
               type="button"
@@ -97,28 +153,32 @@ export default function SettingsPage() {
                   : 'border-zinc-800 hover:border-zinc-700'
               }`}
             >
-              {pid === 'anthropic' && 'Anthropic (Claude)'}
-              {pid === 'google' && 'Google Gemini'}
-              {pid === 'openai' && 'OpenAI GPT'}
-              {pid === 'groq' && 'Groq'}
-              {pid === 'ollama' && 'Ollama (Local)'}
+              {PROVIDER_LABELS[pid]}
             </button>
           ))}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4 pt-2">
           <div>
             <label className="text-xs text-zinc-400 mb-1 block">Model</label>
-            <input
+            <select
               className="input"
               value={model}
               onChange={e => setModel(e.target.value)}
-              placeholder="e.g., claude-haiku-4-5-20251001"
-            />
+            >
+              {PROVIDER_MODELS[selectedProvider]?.map(m => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </select>
           </div>
 
           <div>
-            <label className="text-xs text-zinc-400 mb-1 block">API Key {cfg?.providers?.[selectedProvider]?.hasKey && '(saved)'}</label>
+            <label className="text-xs text-zinc-400 mb-1 block">
+              API Key 
+              {cfg?.providers?.[selectedProvider]?.hasKey && 
+                <span className="text-emerald-500 ml-2">(saved)</span>
+              }
+            </label>
             <input
               className="input"
               type="password"
@@ -128,18 +188,36 @@ export default function SettingsPage() {
             />
           </div>
 
-          <div className="flex gap-3">
+          <div>
+            <label className="text-xs text-zinc-400 mb-1 block">Mode</label>
+            <select
+              className="input"
+              value={mode}
+              onChange={e => setMode(e.target.value as 'fast' | 'full')}
+            >
+              <option value="fast">Fast (cheapest, recommended)</option>
+              <option value="full">Full (more thorough analysis)</option>
+            </select>
+          </div>
+
+          <div className="flex gap-3 pt-2">
             <button
               onClick={saveProvider}
               disabled={saving}
               className="btn btn-primary"
             >
-              {saving ? 'Saving...' : 'Save'}
+              {saving ? 'Saving...' : 'Save Settings'}
             </button>
-            {message && (
-              <span className="text-sm text-zinc-400 self-center">{message}</span>
+            {success && (
+              <span className="text-sm text-emerald-500 self-center">Settings saved!</span>
             )}
           </div>
+          
+          {error && (
+            <div className="text-sm text-red-400 p-2 rounded bg-red-900/20">
+              Error: {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
