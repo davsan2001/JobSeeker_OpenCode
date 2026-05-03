@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type { UserConfig } from '@/lib/types'
 import type { ProviderId } from '@/lib/llm/types'
 
@@ -52,11 +54,14 @@ const PROVIDER_LABELS: Record<ProviderId, string> = {
 }
 
 export default function SettingsPage() {
+  const router = useRouter()
   const [cfg, setCfg] = useState<UserConfig | null>(null)
+  const [profile, setProfile] = useState<{ email: string; displayName: string | null; tier: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   const [selectedProvider, setSelectedProvider] = useState<ProviderId>('google')
   const [apiKey, setApiKey] = useState('')
@@ -70,9 +75,11 @@ export default function SettingsPage() {
   useEffect(() => {
     Promise.all([
       fetch('/api/config').then(r => r.json()),
-      fetch('/api/cv').then(r => r.json()).catch(() => ({ hasRaw: false, summary: null }))
-    ]).then(([configData, cvData]) => {
+      fetch('/api/cv').then(r => r.json()).catch(() => ({ hasRaw: false, summary: null })),
+      fetch('/api/profile').then(r => r.json()).catch(() => ({ email: '', displayName: null }))
+    ]).then(([configData, cvData, profileData]) => {
       setCfg(configData)
+      setProfile(profileData)
       if (configData.activeProvider) {
         setSelectedProvider(configData.activeProvider)
         const provider = configData.providers?.[configData.activeProvider]
@@ -140,6 +147,20 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleLogout() {
+    setLoggingOut(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' })
+      if (!res.ok) throw new Error('Logout failed')
+      router.push('/login')
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setLoggingOut(false)
+    }
+  }
+
   async function uploadCv() {
     if (!cvText.trim() || cvText.length < 100) {
       setError('Please paste at least 100 characters of your CV')
@@ -177,13 +198,6 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-sm text-zinc-400 mt-1">
-          Configure your AI provider and upload your CV to get started.
-        </p>
-      </div>
-
       {error && (
         <div className="p-3 rounded-lg bg-red-900/20 border border-red-800 text-red-400 text-sm">
           {error}
@@ -195,6 +209,32 @@ export default function SettingsPage() {
           {success}
         </div>
       )}
+
+      {profile && (
+        <div className="card-soft p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div className="font-medium text-lg">{profile.displayName || 'Your Account'}</div>
+            <div className="text-sm text-zinc-400">{profile.email}</div>
+            <div className="text-xs text-zinc-500 mt-1">
+              Plan: <span className="capitalize">{profile.tier || 'free'}</span>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="btn btn-ghost text-sm"
+          >
+            {loggingOut ? 'Signing out...' : 'Sign out'}
+          </button>
+        </div>
+      )}
+
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        <p className="text-sm text-zinc-400 mt-1">
+          Configure your AI provider and upload your CV to get started.
+        </p>
+      </div>
 
       <div className="card-soft p-5 sm:p-6 space-y-5">
         <div className="flex items-center justify-between">

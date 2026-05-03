@@ -482,6 +482,119 @@ export async function getCompanyCache(slug: string): Promise<IntelReport | null>
   return data?.intel as IntelReport | null
 }
 
+export async function getProfile(userId: string): Promise<{
+  id: string
+  email: string
+  displayName: string | null
+  avatarUrl: string | null
+  tier: string
+  subscriptionStatus: string | null
+} | null> {
+  const supabase = createSupabaseServerClient()
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, email, display_name, avatar_url, tier, subscription_status')
+    .eq('id', userId)
+    .single()
+  
+  if (error || !data) return null
+  
+  return {
+    id: data.id,
+    email: data.email,
+    displayName: data.display_name,
+    avatarUrl: data.avatar_url,
+    tier: data.tier,
+    subscriptionStatus: data.subscription_status
+  }
+}
+
+export interface CareerPreferences {
+  desiredRoles: string[]
+  locations: string[]
+  remoteOk: boolean
+  seniority: string | null
+  employmentTypes: string[]
+  minSalary: number | null
+  salaryCurrency: string | null
+  industriesToAvoid: string[]
+  languages: string[]
+  minMatchScore: number
+  dailyApplyLimit: number | null
+  dailyAutoSend: boolean
+}
+
+function emptyCareerPrefs(): CareerPreferences {
+  return {
+    desiredRoles: [],
+    locations: [],
+    remoteOk: true,
+    seniority: null,
+    employmentTypes: [],
+    minSalary: null,
+    salaryCurrency: null,
+    industriesToAvoid: [],
+    languages: [],
+    minMatchScore: 80,
+    dailyApplyLimit: null,
+    dailyAutoSend: false
+  }
+}
+
+export async function getCareerPreferences(userId: string): Promise<CareerPreferences> {
+  const supabase = createSupabaseServerClient()
+  const { data } = await supabase
+    .from('career_preferences')
+    .select('*')
+    .eq('user_id', userId)
+    .single()
+  
+  if (!data) return emptyCareerPrefs()
+  
+  return {
+    desiredRoles: data.desired_roles || [],
+    locations: data.locations || [],
+    remoteOk: data.remote_ok ?? true,
+    seniority: data.seniority,
+    employmentTypes: data.employment_types || [],
+    minSalary: data.min_salary,
+    salaryCurrency: data.salary_currency,
+    industriesToAvoid: data.industries_to_avoid || [],
+    languages: data.languages || [],
+    minMatchScore: data.min_match_score ?? 80,
+    dailyApplyLimit: data.daily_apply_limit,
+    dailyAutoSend: data.daily_auto_send ?? false
+  }
+}
+
+export async function saveCareerPreferences(userId: string, prefs: Partial<CareerPreferences>): Promise<CareerPreferences> {
+  const supabase = createSupabaseServerClient()
+  const current = await getCareerPreferences(userId)
+  
+  const merged = { ...current, ...prefs }
+  
+  await supabase
+    .from('career_preferences')
+    .upsert({
+      user_id: userId,
+      desired_roles: merged.desiredRoles,
+      locations: merged.locations,
+      remote_ok: merged.remoteOk,
+      seniority: merged.seniority,
+      employment_types: merged.employmentTypes,
+      min_salary: merged.minSalary,
+      salary_currency: merged.salaryCurrency,
+      industries_to_avoid: merged.industriesToAvoid,
+      languages: merged.languages,
+      min_match_score: merged.minMatchScore,
+      daily_apply_limit: merged.dailyApplyLimit,
+      daily_auto_send: merged.dailyAutoSend,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' })
+  
+  return merged
+}
+
 export async function setCompanyCache(slug: string, intel: IntelReport) {
   const supabase = createSupabaseServerClient()
   await supabase
