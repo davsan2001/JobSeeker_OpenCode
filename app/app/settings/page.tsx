@@ -420,7 +420,12 @@ export default function SettingsPage() {
         </div>
         
         {cvStatus === 'summarized' && (
-          <p className="text-sm text-emerald-500">✓ Your CV is ready! You can now create job applications.</p>
+          <>
+            <p className="text-sm text-emerald-500">✓ Your CV is ready! You can now create job applications.</p>
+            <Link href="/app" className="btn btn-primary">
+              Go apply to jobs →
+            </Link>
+          </>
         )}
       </div>
     </div>
