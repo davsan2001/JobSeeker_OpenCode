@@ -80,13 +80,16 @@ export async function PUT() {
   try {
     const user = await requireUser()
     const active = await getActiveProviderCallable(user.id)
-    if (!active)
+    
+    if (!active) {
       return NextResponse.json(
-        { error: 'No active provider configured. Open Settings and pick one.' },
+        { error: 'No active AI provider configured. Please save your API key in Settings first.' },
         { status: 400 }
       )
+    }
+    
     const raw = await getCvRaw(user.id)
-    if (!raw) return NextResponse.json({ error: 'No CV uploaded' }, { status: 400 })
+    if (!raw) return NextResponse.json({ error: 'No CV uploaded. Please upload your CV first.' }, { status: 400 })
 
     const { summary, usage } = await summarizeCv(
       { providerId: active.id, cfg: active.cfg },
@@ -96,6 +99,7 @@ export async function PUT() {
     await incrementTokenUsage(user.id, usage.input + usage.output)
     return NextResponse.json({ summary, usage })
   } catch (err) {
+    console.error('[api/cv] PUT error:', err)
     return errorResponse(err)
   }
 }

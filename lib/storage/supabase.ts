@@ -174,7 +174,7 @@ export async function getActiveProviderCallable(userId: string): Promise<{
     .from('configs')
     .select('active_provider')
     .eq('user_id', userId)
-    .single()
+    .maybeSingle()
 
   if (!config) return null
 
@@ -185,9 +185,12 @@ export async function getActiveProviderCallable(userId: string): Promise<{
     .select('*')
     .eq('user_id', userId)
     .eq('provider_id', id)
-    .single()
+    .maybeSingle()
 
-  if (!providerConfig) return null
+  if (!providerConfig) {
+    console.log('[getActiveProviderCallable] No provider config for', id)
+    return null
+  }
 
   const cfg: { model: string; baseUrl?: string; apiKey?: string } = {
     model: providerConfig.model,
