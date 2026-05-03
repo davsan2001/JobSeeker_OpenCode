@@ -86,7 +86,19 @@ interface SaveConfigPatch {
 
 export async function saveConfig(userId: string, patch: SaveConfigPatch): Promise<UserConfig> {
   const supabase = createSupabaseServerClient()
-  const current = await getConfig(userId)
+  let current = await getConfig(userId)
+  
+  if (!current) {
+    const { error: insertError } = await supabase
+      .from('configs')
+      .insert({ user_id: userId, active_provider: 'google', mode: 'fast' })
+    
+    if (insertError && !insertError.message.includes('duplicate')) {
+      console.error('Error creating config:', insertError)
+    }
+    current = await getConfig(userId)
+  }
+  
   if (!current) throw new Error('Config not found')
 
   if (patch.mode !== undefined) current.mode = patch.mode

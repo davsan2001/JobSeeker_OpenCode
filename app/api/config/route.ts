@@ -7,13 +7,27 @@ import type { ProviderId } from '@/lib/llm/types'
 export const runtime = 'nodejs'
 
 export async function GET() {
-  return NextResponse.json({
-    activeProvider: 'anthropic',
-    providers: {},
-    mode: 'fast',
-    userLocale: 'auto',
-    createdAt: new Date().toISOString()
-  })
+  try {
+    const user = await requireUser()
+    const cfg = await getConfig(user.id)
+    return NextResponse.json(
+      cfg || {
+        activeProvider: 'google',
+        providers: {},
+        mode: 'fast',
+        userLocale: 'auto',
+        createdAt: new Date().toISOString()
+      }
+    )
+  } catch {
+    return NextResponse.json({
+      activeProvider: 'google',
+      providers: {},
+      mode: 'fast',
+      userLocale: 'auto',
+      createdAt: new Date().toISOString()
+    })
+  }
 }
 
 interface PutBody {

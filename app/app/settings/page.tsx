@@ -109,10 +109,15 @@ export default function SettingsPage() {
         body: JSON.stringify(body)
       })
       
-      const data = await res.json()
+      const text = await res.text()
       
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to save')
+        let errorMsg = 'Failed to save'
+        try {
+          const data = JSON.parse(text)
+          errorMsg = data.error || errorMsg
+        } catch {}
+        throw new Error(errorMsg)
       }
       
       setSuccess(true)
@@ -120,6 +125,7 @@ export default function SettingsPage() {
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
       setError((err as Error).message)
+      console.error('Save error:', err)
     } finally {
       setSaving(false)
     }
