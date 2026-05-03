@@ -21,11 +21,22 @@ function errorResponse(err: unknown, status = 500) {
 }
 
 export async function GET() {
-  return NextResponse.json({
-    hasRaw: false,
-    rawPreview: null,
-    summary: null
-  })
+  try {
+    const user = await requireUser()
+    const raw = await getCvRaw(user.id)
+    const summary = await getCvSummary(user.id)
+    return NextResponse.json({
+      hasRaw: !!raw,
+      rawPreview: raw ? raw.slice(0, 400) : null,
+      summary
+    })
+  } catch {
+    return NextResponse.json({
+      hasRaw: false,
+      rawPreview: null,
+      summary: null
+    })
+  }
 }
 
 export async function POST(req: Request) {

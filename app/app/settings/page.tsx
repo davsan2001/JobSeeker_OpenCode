@@ -56,29 +56,39 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const [success, setSuccess] = useState<string | null>(null)
 
   const [selectedProvider, setSelectedProvider] = useState<ProviderId>('google')
   const [apiKey, setApiKey] = useState('')
   const [model, setModel] = useState('')
   const [mode, setMode] = useState<'fast' | 'full'>('fast')
 
+  const [cvText, setCvText] = useState('')
+  const [cvStatus, setCvStatus] = useState<'none' | 'uploaded' | 'summarized'>('none')
+  const [uploadingCv, setUploadingCv] = useState(false)
+
   useEffect(() => {
-    fetch('/api/config')
-      .then(r => r.json())
-      .then(data => {
-        setCfg(data)
-        if (data.activeProvider) {
-          setSelectedProvider(data.activeProvider)
-          const provider = data.providers?.[data.activeProvider]
-          if (provider) {
-            setModel(provider.model || '')
-          }
+    Promise.all([
+      fetch('/api/config').then(r => r.json()),
+      fetch('/api/cv').then(r => r.json()).catch(() => ({ hasRaw: false, summary: null }))
+    ]).then(([configData, cvData]) => {
+      setCfg(configData)
+      if (configData.activeProvider) {
+        setSelectedProvider(configData.activeProvider)
+        const provider = configData.providers?.[configData.activeProvider]
+        if (provider) {
+          setModel(provider.model || '')
         }
-        setMode(data.mode || 'fast')
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
+      }
+      setMode(configData.mode || 'fast')
+      
+      if (cvData.summary) {
+        setCvStatus('summarized')
+      } else if (cvData.hasRaw) {
+        setCvStatus('uploaded')
+      }
+    }).catch(console.error)
+    .finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
@@ -91,7 +101,7 @@ export default function SettingsPage() {
   async function saveProvider() {
     setSaving(true)
     setError(null)
-    setSuccess(false)
+    setSuccess(null)
     try {
       const body = {
         activeProvider: selectedProvider,
@@ -120,19 +130,49 @@ export default function SettingsPage() {
         throw new Error(errorMsg)
       }
       
-      setSuccess(true)
+      setSuccess('AI provider saved!')
       setApiKey('')
-      setTimeout(() => setSuccess(false), 3000)
+      setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
       setError((err as Error).message)
-      console.error('Save error:', err)
     } finally {
       setSaving(false)
     }
   }
 
+  async function uploadCv() {
+    if (!cvText.trim() || cvText.length < 100) {
+      setError('Please paste at least 100 characters of your CV')
+      return
+    }
+    
+    setUploadingCv(true)
+    setError(null)
+    
+    try {
+      const res = await fetch('/api/cv', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text: cvText })
+      })
+      
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to upload CV')
+      }
+      
+      setCvStatus('uploaded')
+      setSuccess('CV uploaded! Click "Summarize" to process it.')
+      setTimeout(() => setSuccess(null), 3000)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setUploadingCv(false)
+    }
+  }
+
   if (loading) {
-    return <div className="skeleton h-8 w-48" />
+    return <div className="space-y-3"><div className="skeleton h-8 w-48" /><div className="skeleton h-32 w-full" /></div>
   }
 
   return (
@@ -140,26 +180,49 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-zinc-400 mt-1">
-          Configure your AI provider and preferences.
+          Configure your AI provider and upload your CV to get started.
         </p>
       </div>
 
+      {error && (
+        <div className="p-3 rounded-lg bg-red-900/20 border border-red-800 text-red-400 text-sm">
+          {error}
+        </div>
+      )}
+      
+      {success && (
+        <div className="p-3 rounded-lg bg-emerald-900/20 border border-emerald-800 text-emerald-400 text-sm">
+          {success}
+        </div>
+      )}
+
       <div className="card-soft p-5 sm:p-6 space-y-5">
-        <h2 className="font-semibold text-lg">AI Provider</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-lg">AI Provider</h2>
+          {cfg?.providers?.[selectedProvider]?.hasKey && (
+            <span className="chip chip-ok text-xs">Configured</span>
+          )}
+        </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {(Object.keys(PROVIDER_LABELS) as ProviderId[]).map(pid => (
             <button
               key={pid}
               type="button"
-              onClick={() => setSelectedProvider(pid)}
-              className={`p-3 rounded-lg border text-sm font-medium transition ${
+              onClick={() => {
+                setSelectedProvider(pid)
+                setModel(PROVIDER_MODELS[pid]?.[0]?.id || '')
+              }}
+              className={`p-3 rounded-lg border text-sm font-medium transition relative ${
                 selectedProvider === pid
                   ? 'border-amber-500/60 bg-amber-500/5'
                   : 'border-zinc-800 hover:border-zinc-700'
               }`}
             >
               {PROVIDER_LABELS[pid]}
+              {cfg?.providers?.[pid]?.hasKey && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full" />
+              )}
             </button>
           ))}
         </div>
@@ -180,18 +243,18 @@ export default function SettingsPage() {
 
           <div>
             <label className="text-xs text-zinc-400 mb-1 block">
-              API Key 
-              {cfg?.providers?.[selectedProvider]?.hasKey && 
-                <span className="text-emerald-500 ml-2">(saved)</span>
-              }
+              API Key
             </label>
             <input
               className="input"
               type="password"
               value={apiKey}
               onChange={e => setApiKey(e.target.value)}
-              placeholder={apiKey ? '••••••••' : 'Enter your API key'}
+              placeholder="Enter your API key"
             />
+            {cfg?.providers?.[selectedProvider]?.hasKey && (
+              <p className="text-xs text-emerald-500 mt-1">API key saved</p>
+            )}
           </div>
 
           <div>
@@ -206,25 +269,74 @@ export default function SettingsPage() {
             </select>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={saveProvider}
-              disabled={saving}
-              className="btn btn-primary"
-            >
-              {saving ? 'Saving...' : 'Save Settings'}
-            </button>
-            {success && (
-              <span className="text-sm text-emerald-500 self-center">Settings saved!</span>
-            )}
-          </div>
-          
-          {error && (
-            <div className="text-sm text-red-400 p-2 rounded bg-red-900/20">
-              Error: {error}
-            </div>
+          <button
+            onClick={saveProvider}
+            disabled={saving}
+            className="btn btn-primary"
+          >
+            {saving ? 'Saving...' : 'Save AI Settings'}
+          </button>
+        </div>
+      </div>
+
+      <div className="card-soft p-5 sm:p-6 space-y-5">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-lg">Your CV</h2>
+          {cvStatus === 'summarized' && (
+            <span className="chip chip-ok text-xs">Ready</span>
+          )}
+          {cvStatus === 'uploaded' && (
+            <span className="chip chip-warn text-xs">Needs summarize</span>
           )}
         </div>
+        
+        <p className="text-sm text-zinc-400">
+          Paste your CV text below. We'll summarize it once and reuse that summary for every application.
+        </p>
+        
+        <textarea
+          className="textarea min-h-[200px]"
+          value={cvText}
+          onChange={e => setCvText(e.target.value)}
+          placeholder="Paste your CV here (at least 100 characters)..."
+        />
+        
+        <div className="flex gap-3">
+          <button
+            onClick={uploadCv}
+            disabled={uploadingCv || !cvText.trim()}
+            className="btn btn-ghost"
+          >
+            {uploadingCv ? 'Uploading...' : 'Save CV Text'}
+          </button>
+          
+          {cvStatus === 'uploaded' && (
+            <button
+              onClick={async () => {
+                setUploadingCv(true)
+                try {
+                  const res = await fetch('/api/cv', { method: 'PUT' })
+                  if (!res.ok) throw new Error('Failed to summarize')
+                  setCvStatus('summarized')
+                  setSuccess('CV summarized! Ready to use.')
+                  setTimeout(() => setSuccess(null), 3000)
+                } catch (err) {
+                  setError((err as Error).message)
+                } finally {
+                  setUploadingCv(false)
+                }
+              }}
+              disabled={uploadingCv}
+              className="btn btn-primary"
+            >
+              Summarize CV
+            </button>
+          )}
+        </div>
+        
+        {cvStatus === 'summarized' && (
+          <p className="text-sm text-emerald-500">✓ Your CV is ready! You can now create job applications.</p>
+        )}
       </div>
     </div>
   )
