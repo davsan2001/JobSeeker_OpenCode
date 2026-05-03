@@ -117,7 +117,7 @@ export default function HomePage() {
               }
             />
           </ol>
-          <Link href="/settings" className="btn btn-primary btn-lg w-full sm:w-auto">
+          <Link href="/login" className="btn btn-primary btn-lg w-full sm:w-auto">
             Open Settings →
           </Link>
         </div>
@@ -261,7 +261,7 @@ export default function HomePage() {
           <div>Deep mode → recommended with a mid-tier model.</div>
           <div className="pt-1">
             Change model or budget in{' '}
-            <Link className="underline" href="/settings">settings</Link>.
+            <Link className="underline" href="/login">sign in</Link>.
           </div>
         </div>
       </aside>
