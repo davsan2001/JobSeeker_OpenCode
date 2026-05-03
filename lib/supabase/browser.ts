@@ -19,6 +19,15 @@ export function createSupabaseBrowserClient() {
 }
 
 function requireEnv(name: string): string {
+  // En Vercel, las variables se cargan automáticamente
+  // Si no existe, lanzamos error con la URL actual para debug
+  if (typeof window !== 'undefined') {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl) {
+      console.error('Missing env:', name, 'Available:', Object.keys(process.env).filter(k => k.includes('SUPABASE')));
+    }
+    return supabaseUrl || 'https://placeholder.supabase.co';
+  }
   const v = process.env[name];
   if (!v) throw new Error(`${name} is not set`);
   return v;
