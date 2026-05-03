@@ -1,0 +1,117 @@
+Last updated in Mar 2026
+David Sanchez
+Multimedia Engineer
+Santiago de Cali, Colombia|dav.sanchez2001@gmail.com|316 3376523
+davidrapiidz.wixsite.com/david-sanchez-portfo|linkedin.com/in/daeevys
+Resume
+I’m a Multimedia Engineer specialized in Unreal Engine with expertise in C++ and gameplay programming. Passionate
+about immersive experiences and game performance optimization, with experience in animation programming and AI
+development. I consider myself a strong team leader, highly communicative, and responsible, with a deep passion for
+video games.
+Experience
+Software Engineer (Game Developer, Experience Developer, Web Developer), CIPP
+Centro de Innovación y Productividad del Litoral Pacífico | Fundacion Universidad del Valle
+– Santiago de Cali, CO
+May 2025 – present
+•
+Led the conceptual design and planning of the island’s digital virtualization, including
+topographic analysis, section mapping, and user experience strategy.
+•
+Developed the project’s base environment, modeling realistic landscapes, materials, and
+lighting systems to simulate a dynamic ecosystem.
+•
+Designed and implemented interactive systems using both Unity and Unreal Engine,
+enabling users to explore and engage with virtual sections.
+•
+Created responsive UI widgets and multilingual interfaces, integrating localization systems
+for Spanish and English support
+•
+Built a fully functional virtual tour of the aquarium, combining visual storytelling,
+interactive navigation, and educational content.
+•
+Conducted technical migration from Unity to Unreal Engine, adapting workflows,
+rebuilding systems, and ensuring feature parity.
+Projects
+(ECHO-EMOTION (THESIS PROJECT) ) – Cali, COAug 2024 – Oct 2024
+VR Horror experience
+•
+Designed and developed a VR experience using Unreal Engine, focusing on spatial audio to enhance
+emotional immersion
+•
+Implemented diegetic/non-diegetic sound systems and 3D spatial audio techniques (occlusion,
+attenuation, reverberation) for realistic soundscapes.
+•
+Conducted user testing with surveys and psychophysiological analysis to measure emotional
+responses (valence, arousal) and immersion levels.
+•
+Synchronized audio with visual elements to maintain coherence and avoid immersion-breaking
+inconsistencies.
+•
+Optimized dynamic soundscapes (e.g., storm effects, environmental interactions) to guide users and
+evoke targeted emotions (fear, tension).
+•
+Iterated prototype designs based on feedback, refining audio-visual integration and performance in
+Unreal Engine.
+•
+Documented technical workflows and emotional design strategies aligned with UX certification
+principles.
+
+Tactical Multiplayer Cover System (OWN PROJECT) – Cali, COFeb 2025 – Mar 2025
+•
+Designed and implemented core multiplayer game mechanics, ensuring smooth and responsive
+interactions with players.
+•
+Utilized debugging tools to identify and resolve issues, improving overall game stability and
+performance
+•
+Developed and integrated animation systems, blending character movements seamlessly with
+gameplay mechanics.
+•
+Designed and implemented enemy AI using Behavior Trees to create strategic behaviors.
+•
+Developed animation systems directly in C++ using Unreal Engine, implementing State Machines,
+Blend Spaces, and custom logic to ensure responsive and immersive character behaviors.
+•
+Utilized agile methodologies to efficiently manage multiple ongoing projects simultaneously while prioritizing tasks
+according to importance and urgency.
+•
+Passionate about learning and committed to continual improvement.
+Education
+UNIVERSIDAD AUTONOMA DE OCCIDENTE , Bachelor of Engineering in Multimedia
+Engineering – Cali, CO
+Dec 2024
+•
+Thesis: ECHO-EMOTION
+•
+Focus: Game Development
+IETI ANTONIO JOSÉ CAMACHO, in High School Diploma & Associate Degree in Electron-
+ics Technology – Cali, CO
+Dec 2018
+Technical Skills
+Languages: C++, C#, Python and Blueprints, somewhat basic C.
+Focus: Gameplay Programming and 3D Math and Physics.
+Infrastructure: Kubernetes, Ray, distributed training, AWS, GCP
+Game Engine Familiarity: Unreal Engine, Unity, Godot.
+Version control systems: GitHub, Helix Core, Diversion.
+English C1
+VR Knowledge
+SCRUM Knowledg
+UX Knowledge
+Multiplayer Features.
+Soft Skills
+Leadership
+Problem solving
+Creative thinking
+Continuous Learning
+Certifications
+UNREAL ENGINE 5 C++ DEVELOPER: LEARN C++ & MAKE VIDEO GAMES – UdemyJan 2025
+UNREAL ENGINE 5: ONE COURSE SOLUTION FOR NIAGARA VFX – UdemyCurrent
+
+UX DESIGN FOR AUGMENTED REALITY – IxDFSept 2024
+AGILE METHODS FOR UX DESIGN – IxDFSept 2024
+UX DESIGN FOR VIRTUAL REALITY – IxDFSept 2024
+AFFORDANCES: DESIGNING INTUITIVE USER INTERFACES – IxDFSept 2024
+PROFESSIONAL BLUEPRINTS COURSE IN UNREAL ENGINE – UdemyMar 2023
+ESL004: ADVANCED ENGLISH AS A SECOND LANGUAGE – Saylor AcademyMar 2023
+PROFESSIONAL VIDEO GAME DESIGN COURSE – PlatziMar 2023
+COURSE OF C# FOR VIDEO GAMES – PlatziMar 2023

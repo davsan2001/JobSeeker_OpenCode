@@ -1,0 +1,88 @@
+{
+  "identity": {
+    "name": "CD PROJEKT RED",
+    "type": "Game Development Studio",
+    "stage": "Established",
+    "hq": "Warsaw, Poland",
+    "size": "Large",
+    "products": [
+      "The Witcher",
+      "Cyberpunk 2077"
+    ]
+  },
+  "culture_signals": [
+    {
+      "label": "International Work Environment",
+      "note": "Truly international working environment with a diverse selection of people from all around the world",
+      "confidence": "high"
+    },
+    {
+      "label": "Flexible Working Hours",
+      "note": "Flexible working hours and no dress-code",
+      "confidence": "high"
+    },
+    {
+      "label": "Employee Well-being",
+      "note": "Company-paid medical healthcare, free mental health support, and paid leave",
+      "confidence": "high"
+    }
+  ],
+  "flags": [
+    {
+      "color": "green",
+      "note": "Hybrid or fully remote work option available"
+    }
+  ],
+  "hiring_manager_guess": {
+    "title": "Technical Director or Lead Engineer",
+    "seniority": "Senior",
+    "background": "Technical"
+  },
+  "role_decoding": {
+    "hard_requirements": [
+      "Deep proficiency in C++ programming",
+      "Extensive knowledge of Unreal Engine",
+      "Substantial networking experience and understanding of multiplayer gameplay architecture"
+    ],
+    "soft_requirements": [
+      "Clear and effective communication"
+    ],
+    "nice_to_have": [
+      "Shipped at least one Unreal-based game, particularly with networked or multiplayer modes",
+      "Experience developing for recent generation consoles",
+      "Experience profiling and optimizing bandwidth"
+    ],
+    "keywords": [
+      "C++",
+      "Unreal Engine",
+      "Multiplayer",
+      "Gameplay Engineer"
+    ],
+    "implicit_needs": [
+      "Ability to work in a team",
+      "Problem-solving skills",
+      "Adaptability"
+    ]
+  },
+  "match_analysis": {
+    "strong_matches": [
+      "C++ programming",
+      "Unreal Engine"
+    ],
+    "partial_matches": [
+      "Game development experience"
+    ],
+    "gaps": [
+      "Substantial networking experience",
+      "Multiplayer gameplay architecture"
+    ],
+    "technical_match_pct": 60
+  },
+  "information_gaps": [
+    "Specific details about the team the Senior Gameplay Engineer will be working with",
+    "More information about the company's current projects and how this role contributes to them"
+  ],
+  "companySlug": "cd-projekt-red",
+  "generated_at": "2026-04-22T02:35:12.970Z",
+  "tokens_used": 2213
+}

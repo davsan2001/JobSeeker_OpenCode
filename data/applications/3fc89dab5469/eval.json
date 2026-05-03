@@ -1,0 +1,96 @@
+{
+  "perspectives": [
+    {
+      "id": "P1 HM",
+      "label": "Hiring Manager",
+      "score": 6,
+      "key_note": "Partial match in technical skills",
+      "concerns": [
+        "Lack of substantial networking experience",
+        "Limited experience in multiplayer gameplay architecture"
+      ],
+      "mitigations": [
+        "Potential for growth and learning",
+        "Strong foundation in C++ and Unreal Engine"
+      ]
+    },
+    {
+      "id": "P2 REC",
+      "label": "Recruiter",
+      "score": 8,
+      "key_note": "Good resume readability and keyword match",
+      "concerns": [
+        "Limited experience in game development"
+      ],
+      "mitigations": [
+        "Clear and effective communication skills",
+        "Relevant technical skills"
+      ]
+    },
+    {
+      "id": "P3 RRHH",
+      "label": "HR",
+      "score": 7,
+      "key_note": "No major red flags",
+      "concerns": [
+        "Limited work experience"
+      ],
+      "mitigations": [
+        "Strong educational background",
+        "No history of job hopping"
+      ]
+    },
+    {
+      "id": "P4 PEERS",
+      "label": "Peers",
+      "score": 7,
+      "key_note": "Technical credibility and collaboration potential",
+      "concerns": [
+        "Limited experience working in a team"
+      ],
+      "mitigations": [
+        "Strong technical skills",
+        "Potential for growth and learning"
+      ]
+    },
+    {
+      "id": "P5 VP",
+      "label": "VP/Director",
+      "score": 5,
+      "key_note": "Limited impact potential due to lack of experience",
+      "concerns": [
+        "High cost of training and development",
+        "Limited return on investment"
+      ],
+      "mitigations": [
+        "Potential for long-term growth and development",
+        "Strong technical foundation"
+      ]
+    },
+    {
+      "id": "P6 SELF",
+      "label": "The Candidate",
+      "score": 8,
+      "key_note": "Good career fit and learning opportunities",
+      "concerns": [
+        "Potential for high expectations and pressure"
+      ],
+      "mitigations": [
+        "Strong motivation and willingness to learn",
+        "Good company culture and values"
+      ]
+    }
+  ],
+  "weighted_score": 6.5,
+  "risk_reward": {
+    "best_case": "Successful growth and development as a Senior Gameplay Engineer",
+    "base_case": "Moderate success with some challenges and learning opportunities",
+    "worst_case": "Difficulty in adapting to the role and company, leading to underperformance"
+  },
+  "kill_switches_triggered": [],
+  "light": "red",
+  "recommendation": "SKIP",
+  "rationale": "Low weighted score due to limited experience and high expectations for the role",
+  "generated_at": "2026-04-22T02:35:31.160Z",
+  "tokens_used": 1924
+}

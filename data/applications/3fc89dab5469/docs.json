@@ -1,0 +1,49 @@
+{
+  "cv_markdown": "# Senior Gameplay Engineer\n## Summary\nAs a Multimedia Engineer with a strong background in C++ programming and Unreal Engine, I am excited to apply for the Senior Gameplay Engineer role at CD PROJEKT RED. With experience in leading conceptual design and planning of digital virtualization projects, I am confident in my ability to create compelling gameplay experiences. I am eager to leverage my skills to contribute to the development of high-quality games.\n\n## Core Competencies\n1. **C++ programming**: Proficient in C++ with a strong understanding of its applications in game development.\n2. **Unreal Engine**: Experienced in using Unreal Engine for game development, with a focus on creating high-performance player experiences.\n3. **Game development**: Knowledge of game engine architecture and algorithms, with experience in developing VR experiences.\n4. **Problem-solving**: Skilled in debugging, profiling, and bug fixing code to achieve high-quality performance.\n5. **Team collaboration**: Ability to work in cross-disciplinary teams, with experience in leading conceptual design and planning of projects.\n6. **Communication**: Clear and effective communication skills, with proficiency in English (C1 level).\n7. **Adaptability**: Ability to adapt to new technologies and workflows, with a strong willingness to learn and grow.\n8. **Project management**: Experience in managing projects from concept to completion, with a focus on delivering high-quality results.\n\n## Experience\n* **Multimedia Engineer**: Led the conceptual design and planning of a digital virtualization project, developing a VR horror experience using Unreal Engine.\n* **Project development**: Collaborated with teams to develop and deliver high-quality projects, with a focus on creating compelling gameplay experiences.\n\n## Projects\n* **VR Horror Experience**: Developed a VR horror experience using Unreal Engine, demonstrating my ability to create high-quality, immersive gameplay experiences.\n* **Digital Virtualization Project**: Led the conceptual design and planning of a digital virtualization project, showcasing my ability to manage projects from concept to completion.\n* **Game Development**: Contributed to the development of games using C++ and Unreal Engine, highlighting my understanding of game engine architecture and algorithms.\n\nNote: Due to the information gaps in the provided resume context, some details such as specific metrics and dates are not included in this targeted CV.",
+  "cv_review": {
+    "reviewers": [
+      {
+        "id": "R1",
+        "verdict": "FLAG",
+        "note": "Lack of obvious fit from top third due to limited experience"
+      },
+      {
+        "id": "R2",
+        "verdict": "PASS",
+        "note": "JD's hard-requirement keywords present"
+      },
+      {
+        "id": "R3",
+        "verdict": "FLAG",
+        "note": "Information gaps regarding job-hopping risk and location/visa clarity"
+      },
+      {
+        "id": "R4",
+        "verdict": "FLAG",
+        "note": "Technical credibility is somewhat established but could be stronger with more specific examples"
+      },
+      {
+        "id": "R5",
+        "verdict": "PASS",
+        "note": "Business impact is implied through project management experience"
+      },
+      {
+        "id": "R6",
+        "verdict": "PASS",
+        "note": "No fabrication detected, all information is based on resume context"
+      },
+      {
+        "id": "R7",
+        "verdict": "PASS",
+        "note": "Verbs, quantification, and formatting are adequate, though could be improved with more specific metrics"
+      }
+    ],
+    "total_flags": 3,
+    "total_fails": 0,
+    "ready_to_send": true
+  },
+  "cover_letter_markdown": "I was particularly drawn to CD PROJEKT RED's commitment to creating immersive gaming experiences, as seen in titles like The Witcher and Cyberpunk 2077. With my background in Multimedia Engineering and experience in developing a VR horror experience using Unreal Engine, I believe I can contribute to the company's mission. My proficiency in C++ programming, extensive knowledge of Unreal Engine, and experience in leading the conceptual design and planning of a digital virtualization project align with the role's hard requirements. For instance, my C++ skills were utilized in developing a VR horror experience, my Unreal Engine knowledge was applied in the same project, and my experience in planning was demonstrated through leading a digital virtualization project. I bring a unique combination of technical skills and creative vision, having developed a VR horror experience that showcases my ability to think outside the box and push the boundaries of what is possible in game development. I would appreciate the opportunity to discuss my application and how I can contribute to CD PROJEKT RED's success, perhaps over a 20-minute call to explore how my skills align with the company's needs, and I am available to discuss this further in the Eastern Time Zone.",
+  "email_subject": "Application — Senior Gameplay Engineer — Your Name",
+  "email_body": "I am writing to express my interest in the Senior Gameplay Engineer position at CD PROJEKT RED. I have attached my resume and cover letter for your review. With my strong foundation in C++ programming and Unreal Engine, I am confident in my ability to make a valuable contribution to the team. I would welcome the opportunity to discuss my application and how my skills align with the company's needs. Please do not hesitate to contact me if you require any additional information. I look forward to the opportunity to discuss this further.",
+  "tokens_used": 5230
+}

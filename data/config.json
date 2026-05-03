@@ -1,0 +1,37 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "mode": "fast",
+  "userLocale": "auto",
+  "createdAt": "2026-04-21T22:31:03.981Z",
+  "hasApiKey": true,
+  "apiKeyEnc": "vBAMqqoqHjbJQ9QG:4/LfZZ5YAph3DE2qD+kM3w==:U3t5BVrRK238kJjPu21MNcUwjrIichqz2xCbqQoYofI2amMTwt2zzNwehQsDdKhJ45vjfvsnoHQkjlYQ6sO+lJ98Lxed+8sK907rExqVg66oBruebF4SwewHGxJ5rio16r6r3xk4kpWJecXS",
+  "monthlyTokenBudget": 1000000,
+  "providers": {
+    "anthropic": {
+      "model": "claude-haiku-4-5-20251001",
+      "apiKeyEnc": "vBAMqqoqHjbJQ9QG:4/LfZZ5YAph3DE2qD+kM3w==:U3t5BVrRK238kJjPu21MNcUwjrIichqz2xCbqQoYofI2amMTwt2zzNwehQsDdKhJ45vjfvsnoHQkjlYQ6sO+lJ98Lxed+8sK907rExqVg66oBruebF4SwewHGxJ5rio16r6r3xk4kpWJecXS"
+    },
+    "groq": {
+      "model": "llama-3.3-70b-versatile",
+      "apiKeyEnc": "6mVT+/dVKHoEXtGE:FGA5e32W7eJcigPKNp9agQ==:Ih/1Q9qpzSTfqxSOzfimQ6HUyH17u+g4T/TjOocPmpC96yJsjr7oxXRTkBrfaXbBfm5pjOdZ4qo="
+    }
+  },
+  "activeProvider": "groq",
+  "monthKey": "2026-04",
+  "monthlyTokensUsed": 11793,
+  "google": {
+    "clientId": "328999306010-efq8ljggf3eb78m2u49sq3q6jp69te3m.apps.googleusercontent.com",
+    "clientSecretEnc": "I4mWCQ0Zdnz+PftL:ILoFm3U+HfiMBw0UTawBrg==:12y8HVkimgmsF5ZTa9bZwfaHUyEEibRvtEvKxzdNGDa8cac=",
+    "refreshTokenEnc": "f5A49Bovhb+kE29T:gFFvBxoeLfyocd7TV+gY3w==:Lb88DFFRJaBbEgQmHDyyGBP+Qqt7qS/Hmd7XGssoFgX7EmVeYntStgQRQZ/t9UpHY7wU+/9Z7yLsrnHXRDhJssDdrrSBQgywiWEX1eHW1ztymUNuw9y5oDSN879/I1Xhc3oyc3DamA==",
+    "email": "dav.sanchez2001@gmail.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.send",
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/drive.file",
+      "openid"
+    ],
+    "connectedAt": "2026-04-22T04:12:14.843Z",
+    "accessTokenEnc": "X2GtTlgc1i0fskJq:244IX1tiCHlomkOdLHksNw==:pqGdqAsE/9e1JVmPAUk7iMHQZwik6ZrNGIhdPvZ4gfGcZwAhAmKr23AtdAdfFCOyz/2xK07+1HMWRwFDweZ95LX5L5yHCJKh5ipROaUQ+HVT1MPYJ7U14EEVl5sHhDCQ5kpp5r1R/Lwa3xWwgKQpgRd89k2ordZ68LVALQJaMcGdIv5y7M0Y9qg5VOUiuP+koEXKKhxsjBRaamqpt+OHuRs0Ln9G2ar+4NBfA1IRBj+HDVrnlYY6mDNh/cdsbJCgquNfI3QbjuoA6dSc9Mf708S8Udx3ogPIcYHjEkzKmU3XkncBaTnPvmWbOOAFtnLX0y+MGmrDSAzKEKopxQ==",
+    "accessTokenExpiresAt": 1776834673876
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "name": "David Sanchez",
+  "headline": "Multimedia Engineer",
+  "location": "Santiago de Cali, Colombia",
+  "years_experience": 1,
+  "languages": [
+    {
+      "name": "English",
+      "level": "C1"
+    },
+    {
+      "name": "Spanish",
+      "level": ""
+    }
+  ],
+  "skills": [
+    {
+      "group": "Programming",
+      "items": [
+        "C++",
+        "C#",
+        "Python",
+        "Blueprints",
+        "C"
+      ]
+    },
+    {
+      "group": "Game Engines",
+      "items": [
+        "Unreal Engine",
+        "Unity",
+        "Godot"
+      ]
+    },
+    {
+      "group": "Infrastructure",
+      "items": [
+        "Kubernetes",
+        "Ray",
+        "AWS",
+        "GCP"
+      ]
+    },
+    {
+      "group": "Version Control",
+      "items": [
+        "GitHub",
+        "Helix Core",
+        "Diversion"
+      ]
+    },
+    {
+      "group": "Soft Skills",
+      "items": [
+        "Leadership",
+        "Problem solving",
+        "Creative thinking",
+        "Continuous Learning"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Software Engineer",
+      "company": "Centro de Innovación y Productividad del Litoral Pacífico | Fundacion Universidad del Valle",
+      "period": "2025-05 — present",
+      "highlights": [
+        "Led the conceptual design and planning of the island’s digital virtualization",
+        "Developed the project’s base environment, modeling realistic landscapes, materials, and lighting systems",
+        "Designed and implemented interactive systems using both Unity and Unreal Engine",
+        "Created responsive UI widgets and multilingual interfaces",
+        "Conducted technical migration from Unity to Unreal Engine"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "ECHO-EMOTION (THESIS PROJECT)",
+      "summary": "VR Horror experience",
+      "role": "",
+      "stack": [
+        "Unreal Engine"
+      ],
+      "outcomes": [
+        "Designed and developed a VR experience using Unreal Engine",
+        "Implemented diegetic/non-diegetic sound systems and 3D spatial audio techniques",
+        "Conducted user testing with surveys and psychophysiological analysis"
+      ]
+    },
+    {
+      "name": "Tactical Multiplayer Cover System",
+      "summary": "",
+      "role": "",
+      "stack": [
+        "Unreal Engine",
+        "C++"
+      ],
+      "outcomes": [
+        "Designed and implemented core multiplayer game mechanics",
+        "Utilized debugging tools to identify and resolve issues",
+        "Developed and integrated animation systems"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Engineering in Multimedia Engineering",
+      "institution": "UNIVERSIDAD AUTONOMA DE OCCIDENTE",
+      "year": "2024"
+    },
+    {
+      "degree": "High School Diploma & Associate Degree in Electronics Technology",
+      "institution": "IETI ANTONIO JOSÉ CAMACHO",
+      "year": "2018"
+    }
+  ],
+  "achievements": [],
+  "differentiators": [],
+  "gaps": [],
+  "target_roles": [],
+  "salary_range": {},
+  "compact_resume_context": "Multimedia Engineer with 1 year of experience. Skilled in C++, Unreal Engine, and Unity. Led the conceptual design and planning of a digital virtualization project. Developed a VR horror experience using Unreal Engine. Proficient in English (C1 level). Educated in Multimedia Engineering and Electronics Technology."
+}
