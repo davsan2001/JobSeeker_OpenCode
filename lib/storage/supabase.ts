@@ -36,7 +36,7 @@ export async function getConfig(userId: string): Promise<UserConfig | null> {
     .from('configs')
     .select('*')
     .eq('user_id', userId)
-    .single()
+    .maybeSingle()
 
   const configRow = config as { active_provider: string; mode: string; user_locale: string; monthly_token_budget: number | null; monthly_tokens_used: number; month_key: string | null; created_at: string } | null
 
@@ -89,17 +89,23 @@ export async function saveConfig(userId: string, patch: SaveConfigPatch): Promis
   let current = await getConfig(userId)
   
   if (!current) {
-    const { error: insertError } = await supabase
+    console.log('[saveConfig] Creating new config for user:', userId)
+    const { data, error: insertError } = await supabase
       .from('configs')
       .insert({ user_id: userId, active_provider: 'google', mode: 'fast' })
+      .select()
+      .single()
     
-    if (insertError && !insertError.message.includes('duplicate')) {
-      console.error('Error creating config:', insertError)
+    if (insertError) {
+      console.error('[saveConfig] Insert error:', insertError)
+      throw new Error('Failed to create config: ' + insertError.message)
     }
+    
+    console.log('[saveConfig] Created config:', data)
     current = await getConfig(userId)
   }
   
-  if (!current) throw new Error('Config not found')
+  if (!current) throw new Error('Config not found - failed to create')
 
   if (patch.mode !== undefined) current.mode = patch.mode
   if (patch.monthlyTokenBudget !== undefined) current.monthlyTokenBudget = patch.monthlyTokenBudget
