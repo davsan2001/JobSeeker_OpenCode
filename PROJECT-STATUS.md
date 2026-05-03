@@ -111,9 +111,9 @@
 
 | Componente | Archivo(s) | Estado |
 |-----------|-----------|-------|
-| CV upload (PDF/text) | `app/api/cv/route.ts` | ✅ |
-| CV summarize (IA) | `app/api/cv/route.ts` (PUT) | ✅ |
-| CV storage (raw + summary) | `lib/storage/supabase.ts` | ✅ |
+| **CV upload (PDF/text)** | `app/api/cv/route.ts` | ✅ Guarda CV completo sin modificación |
+| **CV process** | `app/api/cv/route.ts` PUT | ✅ Guarda raw text para generación de CVs |
+| CV storage (raw) | `lib/storage/supabase.ts` | ✅ |
 | Config usuario | `app/api/config/route.ts` | ✅ |
 | Provider config (AI) | UI + storage | ✅ |
 | **Career Preferences API** | `app/api/preferences/route.ts` | ✅ |

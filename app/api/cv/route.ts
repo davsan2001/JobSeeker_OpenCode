@@ -79,25 +79,28 @@ export async function POST(req: Request) {
 export async function PUT() {
   try {
     const user = await requireUser()
-    const active = await getActiveProviderCallable(user.id)
-    
-    if (!active) {
-      return NextResponse.json(
-        { error: 'No active AI provider configured. Please save your API key in Settings first.' },
-        { status: 400 }
-      )
-    }
-    
     const raw = await getCvRaw(user.id)
     if (!raw) return NextResponse.json({ error: 'No CV uploaded. Please upload your CV first.' }, { status: 400 })
 
-    const { summary, usage } = await summarizeCv(
-      { providerId: active.id, cfg: active.cfg },
-      raw
-    )
+    // Save the raw CV as the summary (no modification)
+    // The full CV text is what gets used to generate tailored CVs in Fase 4
+    const summary = {
+      name: 'User CV',
+      headline: 'resume',
+      compact_resume_context: raw,
+      skills: [],
+      experience: [],
+      projects: [],
+      education: [],
+      achievements: [],
+      differentiators: [],
+      gaps: [],
+      target_roles: [],
+      salary_range: {}
+    }
+    
     await saveCvSummary(user.id, summary)
-    await incrementTokenUsage(user.id, usage.input + usage.output)
-    return NextResponse.json({ summary, usage })
+    return NextResponse.json({ summary, usage: { input: 0, output: 0 } })
   } catch (err) {
     console.error('[api/cv] PUT error:', err)
     return errorResponse(err)
