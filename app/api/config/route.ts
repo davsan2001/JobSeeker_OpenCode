@@ -32,7 +32,13 @@ interface PutBody {
 export async function PUT(req: Request) {
   try {
     const user = await requireUser()
-    const body = (await req.json()) as PutBody
+    
+    let body: PutBody
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+    }
 
     if (body.activeProvider && !PROVIDERS[body.activeProvider]) {
       return NextResponse.json(
@@ -56,6 +62,7 @@ export async function PUT(req: Request) {
     const cfg = await saveConfig(user.id, body)
     return NextResponse.json(cfg)
   } catch (err) {
+    console.error('[api/config] PUT error:', err)
     return NextResponse.json(
       { error: (err as Error).message || 'failed to save config' },
       { status: 500 }

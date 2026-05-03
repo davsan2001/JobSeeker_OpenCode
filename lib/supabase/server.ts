@@ -63,7 +63,7 @@ export async function getCurrentUser() {
 export async function requireUser() {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Response('Unauthorized', { status: 401 });
+    throw new Error('Unauthorized - no session found');
   }
   return user;
 }
