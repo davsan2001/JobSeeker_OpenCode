@@ -102,7 +102,7 @@ function LoginPageInner() {
           </button>
 
 <p className="text-xs text-zinc-500">
-            By signing in, you agree to our Terms of Service and Privacy Policy.
+            By signing in, you agree to our <a href="/legal/terms" className="underline">Terms of Service</a> and <a href="/legal/privacy" className="underline">Privacy Policy</a>.
           </p>
         </div>
       </div>

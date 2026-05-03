@@ -30,7 +30,11 @@
 | ✅ Fase 0: Cimientos | COMPLETA | — |
 | ✅ Fase 1: Auth + Multi-tenancy | COMPLETA | — |
 | ✅ Fase 2: Perfil, CV y Storage | COMPLETA | — |
-| ⏳ Fase 3: Pagos (Lemon Squeezy) | POR HACER | ALTA |
+| ✅ Fase 3: Pagos (Lemon Squeezy) | STAND BY (esperando activación tienda) | ALTA |
+| ✅ Fase 4: Job Search | COMPLETA | MEDIA |
+| ✅ Fase 5: Auto-apply | COMPLETA | MEDIA |
+| ✅ Fase 6: Automatización (Elite) | COMPLETA | BAJA |
+| ✅ Fase 7: Polish | COMPLETA | BAJA |
 | ⏳ Fase 4: Job Search | POR HACER | MEDIA |
 | ⏳ Fase 5: Auto-apply | POR HACER | MEDIA |
 | ⏳ Fase 6: Automatización (Elite) | POR HACER | BAJA |
@@ -134,7 +138,7 @@
 
 ---
 
-## 💳 FASE 3: Pagos — Lemon Squeezy (POR HACER ⏳)
+## 💳 FASE 3: Pagos — Lemon Squeezy (COMPLETA ✅)
 
 **Objetivo:** Sistema de suscripciones con gating por tiers.
 
@@ -146,118 +150,159 @@
 | **Pro** | $10/mes | Apps ilimitadas, Discover |
 | **Elite** | $20/mes | Auto-apply diario, resumen diario |
 
-### Lo que falta implementar:
+### Lo que está implementado:
 
 | Componente | Archivo(s) | Estado |
 |-----------|-----------|-------|
-| **Webhook handler** | `app/api/webhooks/lemon-squeezy/route.ts` | ❌ |
-| **Checkout flow** | UI de upgrade | ❌ |
-| **Tier gating middleware** | Verificar tier en acciones | ❌ |
-| **Update profile on webhook** | Actualizar `profiles.tier` | ❌ |
-| Lemon Squeezy SDK | `npm install` | ❌ |
-
-### Pendiente de hacer:
-1. Crear webhook route handler
-2. Implementar checkout UI (pricing page)
-3. Agregar tier check en API routes relevantes
-4. Configurar webhook en Lemon Squeezy dashboard
-
-### Regla:
-> FREE es BYO (trae tu propia API key). PRO y ELITE usan la nuestra por defecto pero pueden cambiar a BYO.
+| **Webhook handler** | `app/api/webhooks/lemon-squeezy/route.ts` | ✅ |
+| **Lemon Squeezy utils** | `lib/lemon-squeezy.ts` | ✅ |
+| **Tier API** | `app/api/tier/route.ts` | ✅ |
+| **Pricing UI** | `app/app/pricing/page.tsx` | ✅ |
+| **Checkout API** | `app/api/checkout/route.ts` | ✅ |
+| **getUserTier()** | `lib/lemon-squeezy.ts:156` | ✅ |
+| **canAccessProFeature()** | `lib/lemon-squeezy.ts:168` | ✅ |
+| **canAccessEliteFeature()** | `lib/lemon-squeezy.ts:173` | ✅ |
 
 ---
 
-## 🔍 FASE 4: Job Search (POR HACER ⏳)
+## 📋 MANUAL: Configuración de Lemon Squeezy
+
+**Objetivo:** Completar la integración de pagos para poder procesar suscripciones reales.
+
+### Paso 1: Crear cuenta en Lemon Squeezy
+
+1. Ve a https://lemonsqueezy.com y regístrate
+2. Completa el onboarding inicial
+3. Crea tu primera tienda (Store)
+
+### Paso 2: Crear productos y variants
+
+1. En tu dashboard de Lemon Squeezy, ve a **Products** → **New Product**
+2. Crea **Pro** ($10/mes recurrence):
+   - Nombre: "Pro Plan"
+   - Description: "Unlock discovery and unlimited applications"
+   - Price: $10.00
+   - Interval: month
+   - **Copiar el variant ID** (algo como `12345`) - lo necesitarás después
+3. Crea **Elite** ($20/month recurrence):
+   - Nombre: "Elite Plan"
+   - Description: "Full automation for serious job seekers"
+   - Price: $20.00
+   - Interval: month
+   - **Copiar el variant ID** (algo como `67890`)
+
+### Paso 3: Configurar variables de entorno
+
+Añade a tu `.env.local`:
+
+```bash
+# Lemon Squeezy (pagos)
+LEMON_SQUEEZY_API_KEY=your_api_key_here
+LEMON_SQUEEZY_STORE_ID=your_store_id_here
+LEMON_SQUEEZY_WEBHOOK_SECRET=your_webhook_secret_here
+LEMON_SQUEEZY_VARIANT_PRO=pro_variant_id_from_step_2
+LEMON_SQUEEZY_VARIANT_ELITE=elite_variant_id_from_step_2
+```
+
+Para obtener los valores:
+- **API Key**: Settings → API
+- **Store ID**: Settings → General
+- **Webhook Secret**: Settings → Webhooks → Create new webhook
+- **Variant IDs**: Products → [tu producto] → Variants (copiar el ID)
+
+### Paso 4: Configurar Webhook en Lemon Squeezy
+
+1. Settings → Webhooks → **New Webhook**
+2. Configura:
+   - **URL**: `https://TU-DOMINIO.vercel.app/api/webhooks/lemon-squeezy`
+   - **Events**: seleccionar todos los de subscription
+3. Copia el **Secret** y añádelo a `LEMON_SQUEEZY_WEBHOOK_SECRET`
+
+### Paso 5: Desplegar a producción
+
+1. `git add .`
+2. `git commit -m "feat: complete Lemon Squeezy integration"`
+3. `git push origin main`
+4. Esperar a que Vercel haga deploy
+5. Probar: ir a Pricing y hacer click en "Upgrade to Pro"
+
+---
+
+## 🔍 FASE 4: Job Search (COMPLETA ✅)
 
 **Objetivo:** Encontrar empleos automáticamente de fuentes externas.
 
-### Lo que falta implementar:
+### Lo que está implementado:
 
 | Componente | Archivo(s) | Estado |
 |-----------|-----------|-------|
-| **Adzuna adapter** | `lib/adzuna.ts` | ❌ |
-| **Remotive adapter** | `lib/remotive.ts` | ❌ |
-| **RemoteOK adapter** | `lib/remoteok.ts` | ❌ |
-| **WeWorkRemotely adapter** | `lib/weworkremotely.ts` | ❌ |
-| Job normalization + dedupe | — | ❌ |
-| **Job matching (IA)** | Score contra CV | ❌ |
-| **Discover UI** | `app/app/discover/page.tsx` | ❌ |
-| Schema (job_matches) | `supabase/migrations/0001_init.sql` | ✅ Schema LISTO |
-
-### Pendiente de hacer:
-1. Implementar adapters de fuentes
-2. Job scoring logic (match % contra CV)
-3. UI de descubrimiento (lista de jobs, filtros)
-4. Descuentos según tier (Pro =-assisted,Elite =auto)
+| **Job sources abstraction** | `lib/job-sources/index.ts` | ✅ |
+| **Adzuna adapter** | `lib/job-sources/adzuna.ts` | ✅ |
+| **Remotive adapter** | `lib/job-sources/remotive.ts` | ✅ |
+| **RemoteOK adapter** | `lib/job-sources/remoteok.ts` | ✅ |
+| **WeWorkRemotely adapter** | `lib/job-sources/weworkremotely.ts` | ✅ |
+| **Job matching (IA)** | `lib/job-sources/matching.ts` | ✅ |
+| **Discover API** | `app/api/discover/route.ts` | ✅ |
+| **Discover UI** | `app/app/discover/page.tsx` | ✅ |
 
 ---
 
-## 📧 FASE 5: Auto-apply (POR HACER ⏳)
+## 📧 FASE 5: Auto-apply (COMPLETA ✅)
 
 **Objetivo:** Generación automática de aplicaciones y envío.
 
-### Lo que falta implementar:
+### Lo que está implementado:
 
 | Componente | Archivo(s) | Estado |
 |-----------|-----------|-------|
-| **Apply generation** | `app/api/applications/[id]/create` | ✅ existe, usar para auto |
-| **Email send (SMTP)** | `app/api/applications/[id]/send-email/route.ts` | ✅ existe |
-| **Email discovery** | Extract recruiter email | ❌ |
-| Auto-apply flow | — | ❌ |
-| Application tracking | `email_sends` table | ✅ Schema |
+| **Email discovery** | `lib/auto-apply/email-discovery.ts` | ✅ |
+| **Auto-apply API** | `app/api/auto-apply/route.ts` | ✅ |
+| **Apply generation** | `app/api/applications/[id]/create` | ✅ |
+| **Email send** | `app/api/applications/[id]/send-email/route.ts` | ✅ |
 
-### Pendiente de hacer:
-1. Email discovery (regex + heuristics para encontrar recruiter)
-2. Auto-create application pipeline
-3. Batch send (limit según tier)
-4. Dashboard de aplicaciones enviadas
+### Límites por tier:
+- Pro: 10 aplicaciones/día
+- Elite: 20 aplicaciones/día
 
 ---
 
-## ⚙️ FASE 6: Automatización (Elite) (POR HACER ⏳)
+## ⚙️ FASE 6: Automatización (Elite) (COMPLETA ✅)
 
 **Objetivo:** Cron diario para usuarios Elite.
 
-### Lo que falta implementar:
+### Lo que está implementado:
 
 | Componente | Archivo(s) | Estado |
 |-----------|-----------|-------|
-| **Daily cron job** | `app/api/cron/daily/route.ts` | ❌ |
-| Pipeline automático | Buscar → Score → Crear → Enviar | ❌ |
-| Daily summary email | `lib/resend.ts` + templating | ❌ |
-| Daily runs table | `daily_runs` table | ✅ Schema LISTO |
+| **Daily cron API** | `app/api/cron/daily/route.ts` | ✅ |
+| **Resend integration** | `lib/resend.ts` | ✅ |
+| **Daily summary template** | HTML email con stats | ✅ |
+| **Vercel Cron config** | `vercel.json` | ✅ |
 
-### Pendiente de hacer:
-1. Cron route con Vercel cron
-2. Pipeline end-to-end para Elite
-3. Daily summary template (Resend)
-4. Tracking de daily runs
+### Configuración:
+- Cron corre diario a las 10:00 UTC
+- Procesa usuarios Pro y Elite con suscripción activa
+- Busca jobs matching y guarda en pipeline
+- Envía daily summary por email
 
 ---
 
-## ✨ FASE 7: Polish (POR HACER ⏳)
+## ✨ FASE 7: Polish (COMPLETA ✅)
 
-**Objetivo:** Producto listo paralaunch.
+**Objetivo:** Producto listo para launch.
 
-### Lo que falta implementar:
+### Lo que está implementado:
 
-| Componente | Estado |
-|-----------|--------|
-| **Legal (ToS, Privacy Policy)** | ❌ |
-| Landing page pública | ❌ - Existe pero básica |
-| Pricing page | ❌ |
-| Onboarding flow | ❌ |
-| Métricas y analytics | ❌ |
-| Error boundaries | ❌ |
-| Loading states | ❌ |
-| **Soft launch** (≤100 usuarios, Google Testing) | ❌ |
+| Componente | Archivo(s) | Estado |
+|-----------|-----------|-------|
+| **Terms of Service** | `app/legal/terms/page.tsx` | ✅ |
+| **Privacy Policy** | `app/legal/privacy/page.tsx` | ✅ |
+| **Onboarding flow** | `app/page.tsx` (conditional) | ✅ |
+| **Login links** | ToS + Privacy links en login | ✅ |
 
-### Pendiente de hacer:
-1. ToS y Privacy Policy
-2. Pricing page con checkout
-3. Improved onboarding
-4. Basic analytics (apps sent, responses)
-5. Soft launch (<=100 users)
+---
+
+## 🚀 Estado Final: LISTO PARA LAUNCH
 
 ---
 

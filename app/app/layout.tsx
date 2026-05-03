@@ -8,6 +8,7 @@ const navItems = [
   { href: '/app', label: 'DISCOVER', icon: '◇' },
   { href: '/app/history', label: 'PIPELINE', icon: '▶' },
   { href: '/app/preferences', label: 'PREFERENCES', icon: '⚙' },
+  { href: '/app/pricing', label: 'PRICING', icon: '★' },
   { href: '/app/settings', label: 'SETTINGS', icon: '◎' },
 ]
 
