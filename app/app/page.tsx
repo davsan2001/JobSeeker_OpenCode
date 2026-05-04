@@ -43,10 +43,12 @@ export default function DashboardPage() {
       const activeId = cfg?.activeProvider
       const activeCfg = activeId ? cfg?.providers?.[activeId] : undefined
       const needsKey = activeId && ['anthropic', 'google', 'openai', 'groq'].includes(activeId)
-      const hasProvider = !!activeCfg && (!needsKey || !!activeCfg.hasKey)
+      // Pro/Elite users have provider included, no need for their own key
+      const hasKey = !!activeCfg?.hasKey || tier.isPro || tier.isElite
+      const hasProvider = !!activeCfg || tier.isPro || tier.isElite
       setReady({
         hasProvider,
-        providerLabel: activeId || '',
+        providerLabel: activeId || 'included',
         hasCvSummary: !!cv.summary,
         isPro: tier.isPro,
         isElite: tier.isElite,
