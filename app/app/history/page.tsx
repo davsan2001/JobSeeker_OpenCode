@@ -17,16 +17,68 @@ const LABELS: Record<ApplicationMeta['status'], { label: string; chip: string }>
   sent: { label: 'Sent', chip: 'chip chip-ok' }
 }
 
+type TierInfo = { tier: string; isElite: boolean; isPro: boolean }
+
 export default function HistoryPage() {
   const [apps, setApps] = useState<ApplicationMeta[] | null>(null)
+  const [tier, setTier] = useState<TierInfo | null>(null)
+  const [autoApplyLoading, setAutoApplyLoading] = useState(false)
+  const [autoApplyResult, setAutoApplyResult] = useState<string | null>(null)
+
   useEffect(() => {
-    fetch('/api/applications')
-      .then((r) => r.json())
-      .then((d) => setApps(d.applications))
+    Promise.all([
+      fetch('/api/applications').then(r => r.json()),
+      fetch('/api/tier').then(r => r.json())
+    ]).then(([appsData, tierData]) => {
+      setApps(appsData.applications)
+      setTier(tierData)
+    })
   }, [])
+
+  async function runAutoApply() {
+    setAutoApplyLoading(true)
+    setAutoApplyResult(null)
+    try {
+      const res = await fetch('/api/auto-apply', { method: 'POST' })
+      const data = await res.json()
+      if (data.error) {
+        setAutoApplyResult(data.error)
+      } else {
+        setAutoApplyResult(`Processed ${data.processed} apps, ${data.successful} successful`)
+        window.location.reload()
+      }
+    } catch {
+      setAutoApplyResult('Failed to run auto-apply')
+    } finally {
+      setAutoApplyLoading(false)
+    }
+  }
 
   return (
     <div className="space-y-5">
+      {(tier?.isElite || tier?.isPro) && (
+        <div className="card-soft p-4 border border-purple-500/30 bg-purple-500/5">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h2 className="font-semibold text-purple-400">Auto-Apply</h2>
+              <p className="text-xs text-zinc-400 mt-1">
+                {tier.isElite ? 'Run automated applications (5/day)' : 'Run automated applications (10/day)'}
+              </p>
+            </div>
+            <button
+              onClick={runAutoApply}
+              disabled={autoApplyLoading}
+              className="btn btn-primary bg-purple-600 hover:bg-purple-500"
+            >
+              {autoApplyLoading ? 'Running...' : 'Run Now'}
+            </button>
+          </div>
+          {autoApplyResult && (
+            <p className="text-xs text-purple-400 mt-2">{autoApplyResult}</p>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h1 className="text-2xl font-bold tracking-tight">History</h1>
         <Link href="/app" className="btn btn-primary">New application</Link>
