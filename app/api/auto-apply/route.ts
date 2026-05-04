@@ -7,7 +7,8 @@ import { canAccessEliteFeature, canAccessProFeature } from '@/lib/lemon-squeezy'
 export const runtime = 'nodejs'
 
 const APPLY_LIMIT_PRO = 10
-const APPLY_LIMIT_ELITE = 20
+const APPLY_LIMIT_ELITE = 5
+const APPLY_LIMIT_FREE = 5
 
 export async function POST(req: Request) {
   const user = await requireUser()
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
   
   if (limit === 0) {
     return NextResponse.json(
-      { error: 'Upgrade to Pro to auto-apply' },
+      { error: 'Upgrade to Pro for auto-apply' },
       { status: 403 }
     )
   }

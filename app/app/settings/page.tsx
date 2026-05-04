@@ -68,34 +68,30 @@ export default function SettingsPage() {
   const [model, setModel] = useState('')
   const [mode, setMode] = useState<'fast' | 'full'>('fast')
 
+  const [cvData, setCvData] = useState<{ summary?: string } | null>(null)
   const [cvText, setCvText] = useState('')
   const [cvStatus, setCvStatus] = useState<'none' | 'uploaded' | 'summarized'>('none')
   const [uploadingCv, setUploadingCv] = useState(false)
+  const [tier, setTier] = useState<{ tier: string; isPro: boolean; isElite: boolean } | null>(null)
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/config').then(r => r.json()),
-      fetch('/api/cv').then(r => r.json()).catch(() => ({ hasRaw: false, summary: null })),
-      fetch('/api/profile').then(r => r.json()).catch(() => ({ email: '', displayName: null }))
-    ]).then(([configData, cvData, profileData]) => {
-      setCfg(configData)
-      setProfile(profileData)
-      if (configData.activeProvider) {
-        setSelectedProvider(configData.activeProvider)
-        const provider = configData.providers?.[configData.activeProvider]
-        if (provider) {
-          setModel(provider.model || '')
-        }
-      }
-      setMode(configData.mode || 'fast')
+    ;(async () => {
+      const [cfgRes, cvRes, tierRes] = await Promise.all([
+        fetch('/api/config'),
+        fetch('/api/cv'),
+        fetch('/api/tier')
+      ])
+      const cfg = await cfgRes.json()
+const cv = await cvRes.json()
       
-      if (cvData.summary) {
-        setCvStatus('summarized')
-      } else if (cvData.hasRaw) {
-        setCvStatus('uploaded')
+      setCfg(cfg)
+      setCvData(cv)
+      setTier(tier)
+      // Set active provider from config
+      if (cfg?.activeProvider) {
+        setSelectedProvider(cfg.activeProvider)
       }
-    }).catch(console.error)
-    .finally(() => setLoading(false))
+    })()
   }, [])
 
   useEffect(() => {
@@ -234,12 +230,25 @@ export default function SettingsPage() {
         <p className="text-sm text-zinc-400 mt-1">
           Configure your AI provider and upload your CV to get started.
         </p>
+        {tier?.isPro && (
+          <div className="mt-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-xs text-amber-400">
+            Pro: Using our AI keys (no API key needed)
+          </div>
+        )}
+        {tier?.isElite && (
+          <div className="mt-2 px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg text-xs text-purple-400">
+            Elite: Auto-apply enabled (5/day)
+          </div>
+        )}
       </div>
 
       <div className="card-soft p-5 sm:p-6 space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-lg">AI Provider</h2>
-          {cfg?.providers?.[selectedProvider]?.hasKey && (
+          {(tier?.isPro || tier?.isElite) && (
+            <span className="chip chip-warn text-xs">Included</span>
+          )}
+          {cfg?.providers?.[selectedProvider]?.hasKey && !tier?.isPro && !tier?.isElite && (
             <span className="chip chip-ok text-xs">Configured</span>
           )}
         </div>
@@ -281,21 +290,28 @@ export default function SettingsPage() {
             </select>
           </div>
 
-          <div>
-            <label className="text-xs text-zinc-400 mb-1 block">
-              API Key
-            </label>
-            <input
-              className="input"
-              type="password"
-              value={apiKey}
-              onChange={e => setApiKey(e.target.value)}
-              placeholder="Enter your API key"
-            />
-            {cfg?.providers?.[selectedProvider]?.hasKey && (
-              <p className="text-xs text-emerald-500 mt-1">API key saved</p>
-            )}
-          </div>
+          {(tier?.isPro || tier?.isElite) ? (
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+              <p className="text-xs text-emerald-400">API key included in your plan</p>
+              <p className="text-xs text-zinc-500 mt-1">No need to enter your own key</p>
+            </div>
+          ) : (
+            <div>
+              <label className="text-xs text-zinc-400 mb-1 block">
+                API Key
+              </label>
+              <input
+                className="input"
+                type="password"
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                placeholder="Enter your API key"
+              />
+              {cfg?.providers?.[selectedProvider]?.hasKey && (
+                <p className="text-xs text-emerald-500 mt-1">API key saved</p>
+              )}
+            </div>
+          )}
 
           <div>
             <label className="text-xs text-zinc-400 mb-1 block">Mode</label>

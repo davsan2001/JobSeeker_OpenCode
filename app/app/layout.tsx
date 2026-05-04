@@ -83,14 +83,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             alignItems: 'center', 
             padding: '4px 10px',
             borderRadius: '20px',
-            background: 'var(--elevated)',
-            border: '0.5px solid var(--border-hover)',
+            background: profile?.tier === 'elite' ? 'var(--elite)' : profile?.tier === 'pro' ? 'var(--interview)' : 'var(--elevated)',
+            border: `0.5px solid ${profile?.tier === 'elite' ? 'var(--elite-border)' : profile?.tier === 'pro' ? 'var(--interview-border)' : 'var(--border-hover)'}`,
             fontSize: '10px',
-            color: 'var(--text-muted)',
-            textTransform: 'capitalize'
+            fontWeight: 600,
+            color: profile?.tier === 'elite' || profile?.tier === 'pro' ? 'var(--text-primary)' : 'var(--text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
           }}>
-            {profile?.tier || 'Free'}
+            {profile?.tier === 'elite' ? '★ Elite' : profile?.tier === 'pro' ? 'Pro' : 'Free'}
           </div>
+          {profile?.tier === 'elite' && (
+            <div style={{ marginTop: '8px', fontSize: '9px', color: 'var(--elite)' }}>
+              Auto-apply: 5/day
+            </div>
+          )}
+          {profile?.tier === 'pro' && (
+            <div style={{ marginTop: '8px', fontSize: '9px', color: 'var(--interview)' }}>
+              Unlimited apps
+            </div>
+          )}
+          {profile?.tier === 'free' && (
+            <div style={{ marginTop: '8px', fontSize: '9px', color: 'var(--text-muted)' }}>
+              5 apps/month
+            </div>
+          )}
         </div>
       </aside>
 

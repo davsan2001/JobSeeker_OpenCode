@@ -18,7 +18,7 @@ const PRICING = [
     period: 'forever',
     description: 'Get started with manual applications',
     features: [
-      'Up to 10 applications/month',
+      '5 applications/month',
       'AI-powered analysis',
       'CV tailoring',
       'Cover letter generation',

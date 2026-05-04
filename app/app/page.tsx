@@ -7,6 +7,8 @@ type Ready = {
   hasProvider: boolean
   providerLabel: string
   hasCvSummary: boolean
+  isPro: boolean
+  isElite: boolean
   loaded: boolean
 }
 
@@ -16,6 +18,8 @@ export default function DashboardPage() {
     hasProvider: false,
     providerLabel: '',
     hasCvSummary: false,
+    isPro: false,
+    isElite: false,
     loaded: false
   })
   const [form, setForm] = useState({
@@ -31,9 +35,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     ;(async () => {
-      const [cfg, cv] = await Promise.all([
+      const [cfg, cv, tier] = await Promise.all([
         fetch('/api/config').then((r) => r.json()),
-        fetch('/api/cv').then((r) => r.json())
+        fetch('/api/cv').then((r) => r.json()),
+        fetch('/api/tier').then((r) => r.json())
       ])
       const activeId = cfg?.activeProvider
       const activeCfg = activeId ? cfg?.providers?.[activeId] : undefined
@@ -43,6 +48,8 @@ export default function DashboardPage() {
         hasProvider,
         providerLabel: activeId || '',
         hasCvSummary: !!cv.summary,
+        isPro: tier.isPro,
+        isElite: tier.isElite,
         loaded: true
       })
     })()
