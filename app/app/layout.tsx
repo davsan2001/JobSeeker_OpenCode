@@ -18,9 +18,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [profile, setProfile] = useState<{ email: string; tier: string } | null>(null)
 
   useEffect(() => {
-    fetch('/api/profile')
+    fetch('/api/tier')
       .then(r => r.json())
-      .then(setProfile)
+      .then(data => {
+        setProfile({ 
+          email: data.email || '', 
+          tier: data.tier || 'free'
+        })
+      })
       .catch(() => {})
   }, [])
 

@@ -77,6 +77,17 @@ export default function PricingPage() {
       .finally(() => setLoading(false))
   }, [])
 
+  useEffect(() => {
+    const handleFocus = () => {
+      fetch('/api/tier')
+        .then(r => r.json())
+        .then(setTierInfo)
+        .catch(() => {})
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [])
+
   const handleCheckout = async (tier: 'pro' | 'elite') => {
     setCheckingOut(tier)
     try {

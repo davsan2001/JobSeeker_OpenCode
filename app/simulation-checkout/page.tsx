@@ -35,6 +35,7 @@ function SimulationCheckoutContent() {
         if (data.success) {
           setStatus('success')
           setTimeout(() => {
+            router.refresh()
             router.push('/app/pricing')
           }, 2000)
         } else {
