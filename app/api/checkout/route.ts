@@ -64,7 +64,7 @@ async function handleSimulationCheckout(userId: string, tier: 'pro' | 'elite') {
     console.error('[simulation] Webhook error:', err)
   }
 
-  const simulationUrl = `/app/simulation-checkout?sub=${subscription.id}&customer=${customer.id}&tier=${tier}`
+  const simulationUrl = `/simulation-checkout?sub=${subscription.id}&customer=${customer.id}&tier=${tier}`
   
   return NextResponse.json({ 
     url: simulationUrl,
