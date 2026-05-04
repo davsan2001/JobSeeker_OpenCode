@@ -82,11 +82,13 @@ export default function SettingsPage() {
         fetch('/api/tier')
       ])
       const cfg = await cfgRes.json()
-const cv = await cvRes.json()
+      const cv = await cvRes.json()
+      const tier = await tierRes.json()
       
       setCfg(cfg)
       setCvData(cv)
       setTier(tier)
+      setLoading(false)
       // Set active provider from config
       if (cfg?.activeProvider) {
         setSelectedProvider(cfg.activeProvider)
