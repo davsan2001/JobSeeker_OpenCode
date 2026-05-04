@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     const customer = getSimulationCustomer(customerId as string)
 
     try {
-      await handleLemonSqueezyWebhook('subscription_created', {
+      const payload = {
         meta: {
           event_name: 'subscription_created',
           custom_data: { user_id: user.id }
@@ -75,8 +75,17 @@ export async function POST(req: Request) {
             trial_ends_at: null
           }
         },
-        customer_email: customer?.email || ''
-      })
+        customer_email: customer?.email || '',
+        subscription_id: subscription.id,
+        customer_id: customerId,
+        variant_id: subscription.variantId,
+        status: 'active',
+        renews_at: subscription.renewsAt
+      }
+      
+      console.log('[simulation] Calling webhook with payload:', JSON.stringify(payload, null, 2))
+      
+      await handleLemonSqueezyWebhook('subscription_created', payload)
 
       return NextResponse.json({
         success: true,

@@ -10,40 +10,37 @@ export async function handleLemonSqueezyWebhook(
   switch (eventType) {
     case 'subscription_created':
     case 'subscription_updated': {
-      const { customer_id, subscription_id, variant_id, status, trial_ends_at, ends_at, renews_at } = payload
+      const { customer_id, subscription_id, variant_id, status, trial_ends_at, ends_at, renews_at, customer_email } = payload
       
       // Map variant_id to tier
-      // You need to configure these in your Lemon Squeezy dashboard
-      // Pro variant: 12345 (example)
-      // Elite variant: 67890 (example)
       const tier = await getTierFromVariantId(variant_id as string)
       if (!tier) {
         console.error('[webhook] Unknown variant_id:', variant_id)
         return
       }
 
-      // Find user by Lemon Squeezy customer_id
-      // We'll store the lemon_customer_id in user metadata or a separate table
-// First try to find by subscription_id if this is an update
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('subscription_id', subscription_id as string)
-        .single() as { data: { id: string } | null }
+      // Try to find user by custom_data.user_id first (for simulation)
+      const meta = payload.meta as { custom_data?: { user_id?: string } } | undefined
+      let profileId = meta?.custom_data?.user_id
 
-      let profileId = existingProfile?.id
+      // If not found, try to find by subscription_id
+      if (!profileId && subscription_id) {
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('subscription_id', subscription_id as string)
+          .single() as { data: { id: string } | null }
+        profileId = existingProfile?.id
+      }
 
-      // If not found, try to find by customer_email
-      if (!profileId) {
-        const customerEmail = payload.customer_email as string
-        if (customerEmail) {
-          const { data: profileByEmail } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('email', customerEmail)
-            .single() as { data: { id: string } | null }
-          profileId = profileByEmail?.id
-        }
+      // If still not found, try to find by customer_email
+      if (!profileId && customer_email) {
+        const { data: profileByEmail } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', customer_email as string)
+          .single() as { data: { id: string } | null }
+        profileId = profileByEmail?.id
       }
 
       if (profileId) {
@@ -147,8 +144,12 @@ async function getTierFromVariantId(variantId: string): Promise<'free' | 'pro' |
   const proVariantId = process.env.LEMON_SQUEEZY_VARIANT_PRO
   const eliteVariantId = process.env.LEMON_SQUEEZY_VARIANT_ELITE
   
-  if (variantId === proVariantId) return 'pro'
-  if (variantId === eliteVariantId) return 'elite'
+  // Simulation variant IDs (fallback for dev mode)
+  const simProVariantId = 'sim_pro_001'
+  const simEliteVariantId = 'sim_elite_001'
+  
+  if (variantId === proVariantId || variantId === simProVariantId) return 'pro'
+  if (variantId === eliteVariantId || variantId === simEliteVariantId) return 'elite'
   
   return null
 }
