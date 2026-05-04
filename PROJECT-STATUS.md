@@ -1,8 +1,28 @@
 # JobSeeker — Estado del Proyecto
 
 > **Documento vivo de planificación y tracking.**
-> **Última actualización:** 2026-05-03
+> **Última actualización:** 2026-05-04
 > **Versión:** 1.0
+
+---
+
+## 📋 GUÍA DE SESIONES
+
+### Después de cada build - Commit & Push:
+```bash
+cd "C:\Users\david\Desktop\Apps\JobSeeker_OpenCode"
+git add -A
+git commit -m "feat: descripción de los cambios"
+git push origin main
+```
+
+### Abrir el proyecto:
+1. VS Code: `code .`
+2. Dev server: `npm run dev`
+
+### Configuración .env:
+- `.env.local` contiene secrets - nunca commitees
+- `.env.example` es la plantilla
 
 ---
 
